@@ -117,8 +117,30 @@ def generate_init_valuation(sd: SimulationData):
 
 
 def generate_valuation(sd: SimulationData):
-    sd.log("Generating valuations: refine,")
+    sd.log("Generating valuations: refine.")
 
     init_val = sd.init_data['val']
     val_xy = [[vecfunc.vecinterp.refine_chaikin_corner_cutting_xy(*v) for v in vs] for vs in init_val]
     sd.data['val-xy'] = val_xy
+
+
+def generate_resource_dependency(sd: SimulationData):
+    sd.log("Generating resource dependency.")
+
+    # 'c': complementary
+    # 's': substitute
+    # 'm': multiply
+    # output: [('c', 0, 1), ('s', 2,3), ('c', 1,3)]
+    dependencies = []
+    for _ in range(sd.n):
+        t = []
+        x = set(range(sd.ndim))
+        while len(x) > 1:
+            nodes = np.random.choice(x, size=2, replace=False)
+            action = np.random.choice(['c', 's'], p=[0.8, 0.2])
+            t.append((action, nodes))
+            x.remove(nodes[0])
+
+        dependencies.append(t)
+
+    sd.data['resource_dependency'] = dependencies

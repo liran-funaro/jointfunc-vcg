@@ -22,15 +22,12 @@ import numpy as np
 from cloudsim import dataset
 
 
-def get_experiment_name(exp_type, exp_param=None, exp_prefix=None):
+def get_experiment_name(exp_type, exp_param=None, exp_prefix=None, exp_suffix=None):
     if type(exp_param) in (tuple, list):
         exp_param = "-".join(map(str, exp_param))
 
-    if exp_prefix is not None:
-        exp_type = "%s-%s" % (exp_prefix, exp_type)
-
     ret = []
-    for val in (exp_type, exp_param):
+    for val in (exp_prefix, exp_type, exp_param, exp_suffix):
         if val is None:
             continue
 

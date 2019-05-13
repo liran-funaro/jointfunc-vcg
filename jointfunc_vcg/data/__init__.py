@@ -61,18 +61,22 @@ def generate(sd):
 folder_format = "{ndim}d-{n}p"
 
 
-metadata_nonconcave = {
+metadata_increasing = {
     'ndim': 6,
     'n': 256,
     'valuation': {
         'wealth-dist': ['lomax', math.log(5, 4), (0, 128)],
+        'concave': False,
+        'local-maximum-limit': 0,
     },
 }
-nonconcave = dataset.alter_dataset(metadata_nonconcave, folder_format, generator_func=generate,
-                                   prefix='vcg-nonconcave')
+increasing = dataset.alter_dataset(metadata_increasing, folder_format, generator_func=generate,
+                                   prefix='vcg-increasing')
 
-nonrising = dataset.alter_dataset(nonconcave, folder_format, (('valuation', 'local-maximum-limit'), 3),
-                                  prefix='vcg-nonrising')
+non_increasing = dataset.alter_dataset(increasing, folder_format, (('valuation', 'local-maximum-limit'), 3),
+                                       prefix='vcg-non-increasing')
 
-concave = dataset.alter_dataset(nonconcave, folder_format, (('valuation', 'concave'), True),
+concave = dataset.alter_dataset(increasing, folder_format, (('valuation', 'concave'), True),
                                 prefix='vcg-concave')
+
+all_datasets = concave, increasing, non_increasing

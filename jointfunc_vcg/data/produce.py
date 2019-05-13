@@ -17,9 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 import numpy as np
+import functools
 import vecfunc
 from scipy.interpolate import CubicSpline
-import string
 
 
 def get_val_fake_x(sd, shape, ndim=None):
@@ -48,11 +48,6 @@ def get_vals_spline(sd):
     return val_spline
 
 
-def get_einsum_subscript(ndim):
-    operands = list(string.ascii_lowercase[:ndim])
-    return "%s->%s" % (",".join(operands), "".join(operands))
-
-
 def get_vals_slices(sd, shape, ndim=None, factor_wealth=True):
     val_spline = get_vals_spline(sd)
     val_fake_x = get_val_fake_x(sd, shape, ndim)
@@ -77,7 +72,7 @@ def get_vals_slices(sd, shape, ndim=None, factor_wealth=True):
     return ret
 
 
-def get_vals(sd, shape, ndim, factor_wealth=True, players=None):
+def get_vals(sd, shape, ndim, factor_wealth=True, players=None, resource_dependency=None):
     if isinstance(shape, int):
         shape = (shape,)
     if not type(shape) in (list, tuple):
@@ -87,14 +82,19 @@ def get_vals(sd, shape, ndim, factor_wealth=True, players=None):
     if players is None:
         players = range(sd.n)
 
+    if resource_dependency is None:
+        resource_dependency = 'complementary'
+    resource_dependency_func = {
+        'complementary': np.minimum,
+        'substitute': np.maximum,
+        'multiply': np.multiply
+    }[resource_dependency.lower()]
+
     val_slices = get_vals_slices(sd, shape, ndim, factor_wealth=False)
     val_slices = [val_slices[p] for p in players]
 
-    if ndim > 1:
-        subscript = get_einsum_subscript(ndim)
-        vals = [np.einsum(subscript, *vs) for vs in val_slices]
-    else:
-        vals = [vs[0] for vs in val_slices]
+    meshes = (np.meshgrid(*vs, sparse=False, indexing='ij') for vs in val_slices)
+    vals = [functools.reduce(resource_dependency_func, m) for m in meshes]
 
     if factor_wealth:
         wealth = sd.dist_data['wealth']

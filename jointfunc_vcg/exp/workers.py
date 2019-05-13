@@ -27,11 +27,11 @@ import numpy as np
 #########################################################################################################
 # Maille Tuffin (1D Concave Comparison)
 #########################################################################################################
-def maille_tuffin(_ds_obj, index, sd, sz, ndim):
+def maille_tuffin(_ds_obj, index, sd, sz, ndim, resource_dependency):
     shape = param.get_shape_for_gridpoints(sz, ndim)
     gridpoints = np.prod(shape)
     n_chunks = np.subtract(shape, 1)
-    val_slices, vals = produce.get_vals(sd, shape, ndim, factor_wealth=True)
+    val_slices, vals = produce.get_vals(sd, shape, ndim, factor_wealth=True, resource_dependency=resource_dependency)
     ret = vecfunc_vcg.maille_tuffin(vals, val_slices, n_chunks)
     return {
         'input': {
@@ -49,11 +49,12 @@ def maille_tuffin(_ds_obj, index, sd, sz, ndim):
 #########################################################################################################
 # Joint Valuation
 #########################################################################################################
-def joint_val(_ds_obj, index, sd, sz, ndim, join_method=3, join_chunk_size=8, join_flags=None):
+def joint_val(_ds_obj, index, sd, sz, ndim, join_method=3, join_chunk_size=8, join_flags=None,
+              resource_dependency='complementary'):
     shape = param.get_shape_for_gridpoints(sz, ndim)
     gridpoints = np.prod(shape)
     n_chunks = np.subtract(shape, 1)
-    val_slices, vals = produce.get_vals(sd, shape, ndim, factor_wealth=True)
+    val_slices, vals = produce.get_vals(sd, shape, ndim, factor_wealth=True, resource_dependency=resource_dependency)
     ret = vecfunc_vcg.joint_func(vals, n_chunks, join_method=join_method, join_chunk_size=join_chunk_size,
                                  join_flags=join_flags)
     return {
@@ -74,11 +75,12 @@ def joint_val(_ds_obj, index, sd, sz, ndim, join_method=3, join_chunk_size=8, jo
 #########################################################################################################
 # Test data structure build time
 #########################################################################################################
-def test_joint_val_ds_build_time(_ds_obj, index, sd, sz, ndim, join_method=3, join_chunk_size=128):
+def test_joint_val_ds_build_time(_ds_obj, index, sd, sz, ndim, join_method=3, join_chunk_size=128,
+                                 resource_dependency='complementary'):
     shape = param.get_shape_for_gridpoints(sz, ndim)
     gridpoints = np.prod(shape)
     n_chunks = np.subtract(shape, 1)
-    vals = produce.get_vals(sd, shape, ndim=ndim, factor_wealth=True)
+    val_slices, vals = produce.get_vals(sd, shape, ndim, factor_wealth=True, resource_dependency=resource_dependency)
     ret = joint_func.sum_test_ds_build_time(vals, method=join_method, chunk_size=join_chunk_size)
     return {
         'input': {
