@@ -126,21 +126,27 @@ def generate_valuation(sd: SimulationData):
 
 def generate_resource_dependency(sd: SimulationData):
     sd.log("Generating resource dependency.")
+    n = sd.n
+    ndim = sd.ndim
 
     # 'c': complementary
     # 's': substitute
     # 'm': multiply
     # output: [('c', 0, 1), ('s', 2,3), ('c', 1,3)]
-    dependencies = []
-    for _ in range(sd.n):
-        t = []
-        x = set(range(sd.ndim))
-        while len(x) > 1:
-            nodes = np.random.choice(x, size=2, replace=False)
-            action = np.random.choice(['c', 's'], p=[0.8, 0.2])
-            t.append((action, nodes))
-            x.remove(nodes[0])
+    dependencies_cs = []
+    dependencies_csm = []
+    for d, c, p in ((dependencies_cs, ['c', 's'], [0.7, 0.3]), (dependencies_csm, ['c', 's', 'm'], [0.6, 0.3, 0.1])):
+        for _ in range(n):
+            t = []
+            dim_set = set(range(ndim))
+            action_ser = np.random.choice(c, p=p, size=ndim-1)
+            while len(dim_set) > 1:
+                nodes = list(np.random.choice(list(dim_set), size=2, replace=False))
+                action = action_ser.pop()
+                t.append((action, nodes))
+                dim_set.remove(nodes[0])
 
-        dependencies.append(t)
+            d.append(t)
 
-    sd.data['resource_dependency'] = dependencies
+    sd.data['resource_dependency_cs'] = dependencies_cs
+    sd.data['resource_dependency_csm'] = dependencies_csm

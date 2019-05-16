@@ -26,13 +26,14 @@ from jointfunc_vcg.results import analyze, plot
 # Read Unified Results
 #####################################################################################################
 
-def read_results(ds_obj: DataSet, exp_type, exp_param=None, exp_prefix=None):
+def read_results(ds_obj: DataSet, exp_type, exp_param=None, exp_prefix=None, exp_suffix=None):
     """ Returns the raw results data """
-    exp_key = param.get_experiment_name(exp_type, exp_param, exp_prefix)
+    exp_key = param.get_experiment_name(exp_type, exp_param, exp_prefix, exp_suffix)
     return Results(ds_obj, exp_key)
 
 
-def read_unified_results(ds_obj: DataSet, exp_type, exp_prefix=None, result_count=0):
+def read_unified_results(ds_obj: DataSet, exp_type,
+                         exp_param=slice(None), exp_prefix=None, exp_suffix=None, result_count=0):
     """ Returns the raw unified results data """
-    exp_key = param.get_experiment_name(exp_type, exp_prefix=exp_prefix)
+    exp_key = param.get_experiment_name(exp_type, exp_param=exp_param, exp_prefix=exp_prefix, exp_suffix=exp_suffix)
     return UnifiedResults(ds_obj, exp_key, result_count)

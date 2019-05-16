@@ -26,16 +26,17 @@ def get_experiment_name(exp_type, exp_param=None, exp_prefix=None, exp_suffix=No
     if type(exp_param) in (tuple, list):
         exp_param = "-".join(map(str, exp_param))
 
-    ret = []
-    for val in (exp_prefix, exp_type, exp_param, exp_suffix):
-        if val is None:
+    key_set = []
+    for key in (exp_prefix, exp_type, exp_param, exp_suffix):
+        if key is None:
             continue
 
-        val = dataset.convert_to_nice_filename(val)
-        val = val.replace(os.path.sep, ":")
-        ret.append(val)
+        if not isinstance(key, slice):
+            key = dataset.convert_to_nice_filename(key)
+            key = key.replace(os.path.sep, ":")
+        key_set.append(key)
 
-    return tuple(ret)
+    return tuple(key_set)
 
 
 def get_shape_for_gridpoints(sz, ndim):

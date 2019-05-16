@@ -48,9 +48,9 @@ def joint_val_vs_maille_tuffin(ds_obj, exp_type, exp_prefix=None, normalized=Fal
     plt.legend()
 
 
-def joint_val_gridpoints(ds_obj, exp_type, exp_prefix=None, val=None,
-                         val_exp=None, fit_method=None):
-    df = results.analyze.joint_val_gridpoints(ds_obj, exp_type, exp_prefix, val, val_exp)
+def joint_val_gridpoints(ds_obj, exp_type, exp_prefix=None, exp_suffix=None,
+                         val=None, val_exp=None, fit_method=None):
+    df = results.analyze.joint_val_gridpoints(ds_obj, exp_type, exp_prefix, exp_suffix, val, val_exp)
     headers = list(df)
     val_name = headers[-1]
     # n_colors = len(set(df['#Resources']))

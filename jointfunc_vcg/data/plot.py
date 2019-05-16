@@ -66,7 +66,8 @@ def plot_vals_slice(sd, sz=1024, players=None, range_start=0, range_count=4):
         plt.legend()
 
 
-def plot_val(sd, k, sz=32, ndim=2):
-    val_slices, vals = produce.get_vals(sd, sz, ndim, factor_wealth=True, players=(k,))
+def plot_val(sd, k, sz=32, ndim=2, resource_dependency=None):
+    val_slices, vals = produce.get_vals(sd, (sz,)*ndim, ndim, factor_wealth=True, players=(k,),
+                                        resource_dependency=resource_dependency)
     vecfunc.plot(vals[0], force_wire_2d=True, linewidth=1)
     plt.title("player: %s" % k)

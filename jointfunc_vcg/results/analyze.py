@@ -40,8 +40,8 @@ def verify_joint_val_vs_maille_tuffin(ds_obj, exp_type, exp_prefix=None):
     print("Matching payments:", np.all(np.isclose(p1, p2)))
 
 
-def joint_val_data_frame(ds_obj, exp_type, exp_prefix=None, fields=()):
-    r = results.read_unified_results(ds_obj, exp_type, exp_prefix=exp_prefix)
+def joint_val_data_frame(ds_obj, exp_type, exp_prefix=None, exp_suffix=None, fields=()):
+    r = results.read_unified_results(ds_obj, exp_type, exp_prefix=exp_prefix, exp_suffix=exp_suffix)
 
     ndim = r['input', 'ndim']
     shape = r['input', 'gridpoints']
@@ -69,8 +69,8 @@ def joint_val_data_frame(ds_obj, exp_type, exp_prefix=None, fields=()):
     return pd.DataFrame(df, columns=['Resources', 'N Gridpoints', 'Method', *names])
 
 
-def joint_val_gridpoints(ds_obj, exp_type, exp_prefix=None, val=None, val_exp=None):
-    r = results.read_unified_results(ds_obj, exp_type, exp_prefix=exp_prefix)
+def joint_val_gridpoints(ds_obj, exp_type, exp_prefix=None, exp_suffix=None, val=None, val_exp=None):
+    r = results.read_unified_results(ds_obj, exp_type, exp_prefix=exp_prefix, exp_suffix=exp_suffix)
 
     ndim = r['input', 'ndim']
     shape = r['input', 'gridpoints']
