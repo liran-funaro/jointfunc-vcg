@@ -54,9 +54,9 @@ def joint_val_gridpoints(ds_obj, exp_type, exp_prefix=None, exp_suffix=None,
     headers = list(df)
     val_name = headers[-1]
     # n_colors = len(set(df['#Resources']))
-    n_colors = len(set(df['Method']))
-    sns.lineplot(x='N Gridpoints', y=val_name, hue='Method', data=df,
-                 err_style='bars', style="Resources", legend='full', markers=True,
+    n_colors = len(set(df['Method'])) * len(set(df['Resources']))
+    sns.lineplot(x='N Gridpoints', y=val_name, hue='Resources', data=df,
+                 err_style='band', style="Resources", legend='full', markers=True,
                  palette=sns.color_palette('hls', n_colors))
 
     if fit_method is not None:

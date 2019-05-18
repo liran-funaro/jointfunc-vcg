@@ -82,19 +82,49 @@ def get_vals(sd, shape, ndim, factor_wealth=True, players=None, resource_depende
     if players is None:
         players = range(sd.n)
 
-    if resource_dependency is None:
-        resource_dependency = 'complementary'
-    resource_dependency_func = {
-        'complementary': np.minimum,
-        'substitute': np.maximum,
-        'multiply': np.multiply
-    }[resource_dependency.lower()]
-
     val_slices = get_vals_slices(sd, shape, ndim, factor_wealth=False)
     val_slices = [val_slices[p] for p in players]
-
     meshes = (np.meshgrid(*vs, sparse=False, indexing='ij') for vs in val_slices)
-    vals = [functools.reduce(resource_dependency_func, m) for m in meshes]
+
+    if resource_dependency is None:
+        resource_dependency = 'multiply'
+    resource_dependency_func_options = {
+        'complementary': np.minimum,
+        'c': np.minimum,
+        'substitute': np.maximum,
+        's': np.maximum,
+        'multiply': np.multiply,
+        'm': np.multiply,
+    }
+
+    resource_dependency_func = resource_dependency_func_options.get(resource_dependency.lower())
+
+    if resource_dependency_func:
+        vals = [functools.reduce(resource_dependency_func, m) for m in meshes]
+    else:
+        k = f'resource_dependency_{resource_dependency}'
+        if k not in sd.data:
+            raise KeyError(f"No such resource dependency: {resource_dependency}.")
+        dep = sd.data[k]
+        dep = [dep[p] for p in players]
+
+        vals = []
+        for m, d in zip(meshes, dep):
+            mm = {i: sm for i, sm in enumerate(m)}
+            assert len(mm) == ndim, f'Initial len: {len(mm)}'
+            for a, (i0, i1) in d:
+                n0 = mm.pop(i0, None)
+                n1 = mm.pop(i1, None)
+                if n0 is None:
+                    mm[i1] = n1
+                elif n1 is None:
+                    mm[i1] = n0
+                else:
+                    resource_dependency_func = resource_dependency_func_options[a.lower()]
+                    mm[i1] = resource_dependency_func(n0, n1)
+
+            assert len(mm) == 1, f'Result len: {len(mm)}'
+            vals.append(mm[next(iter(mm))])
 
     if factor_wealth:
         wealth = sd.dist_data['wealth']

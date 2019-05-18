@@ -133,13 +133,14 @@ def generate_resource_dependency(sd: SimulationData):
     # 's': substitute
     # 'm': multiply
     # output: [('c', 0, 1), ('s', 2,3), ('c', 1,3)]
-    dependencies_cs = []
-    dependencies_csm = []
-    for d, c, p in ((dependencies_cs, ['c', 's'], [0.7, 0.3]), (dependencies_csm, ['c', 's', 'm'], [0.6, 0.3, 0.1])):
+    dependencies_cs = [], ['c', 's'], [0.7, 0.3]
+    dependencies_csm = [], ['c', 's', 'm'], [0.6, 0.3, 0.1]
+    dependencies_sm = [], ['s', 'm'], [0.3, 0.7]
+    for d, c, p in (dependencies_cs, dependencies_csm, dependencies_sm):
         for _ in range(n):
             t = []
             dim_set = set(range(ndim))
-            action_ser = np.random.choice(c, p=p, size=ndim-1)
+            action_ser = list(np.random.choice(c, p=p, size=ndim-1))
             while len(dim_set) > 1:
                 nodes = list(np.random.choice(list(dim_set), size=2, replace=False))
                 action = action_ser.pop()
@@ -148,5 +149,6 @@ def generate_resource_dependency(sd: SimulationData):
 
             d.append(t)
 
-    sd.data['resource_dependency_cs'] = dependencies_cs
-    sd.data['resource_dependency_csm'] = dependencies_csm
+    sd.data['resource_dependency_cs'] = dependencies_cs[0]
+    sd.data['resource_dependency_csm'] = dependencies_csm[0]
+    sd.data['resource_dependency_sm'] = dependencies_sm[0]
