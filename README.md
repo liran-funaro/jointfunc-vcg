@@ -8,9 +8,9 @@ Liran Funaro, Orna Agmon Ben-Yehuda, and Assaf Schuster. 2019. Efficient Multi-R
 # Install (beta)
 Download and install dependencies by cloning the following repositories:
 
- * vecfunc: https://bitbucket.org/funaro/vecfunc
- * vecfunc-vcg: https://bitbucket.org/funaro/vecfunc-vcg
- * cloudsim: https://bitbucket.org/funaro/cloudsim
+ * vecfunc: https://github.com/liran-funaro/vecfunc
+ * vecfunc-vcg: https://github.com/liran-funaro/vecfunc-vcg
+ * cloudsim: https://github.com/liran-funaro/cloudsim
  
 Follow the `README.md` file in each of these repositories to install them properly.
  
