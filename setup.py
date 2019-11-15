@@ -27,7 +27,7 @@ setup(
     author_email="liran.funaro+jointfunc-vcg@gmail.com",
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
-    url="https://bitbucket.org/funaro/jointfunc-vcg",
+    url="https://github.com/liran-funaro/jointfunc-vcg",
     keywords='cloud vcg jointfunc maille tuffin',
     classifiers=[
         "Programming Language :: Python :: 3",
@@ -39,6 +39,6 @@ setup(
     ],
     install_requires=['numpy', 'matplotlib', 'scipy', 'seaborn', 'pandas', 'vecfunc', 'vecfunc-vcg', 'cloudsim',
                       'tabulate'],
-    dependency_links=['https://bitbucket.org/funaro/vecfunc', 'https://bitbucket.org/funaro/vecfunc-vcg',
-                      'https://bitbucket.org/funaro/cloudsim'],
+    dependency_links=['https://github.com/liran-funaro/vecfunc', 'https://github.com/liran-funaro/vecfunc-vcg',
+                      'https://github.com/liran-funaro/cloudsim'],
 )
