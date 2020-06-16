@@ -63,7 +63,7 @@ def generate_distributions(sd: SimulationData):
     sd.log("Generating distributions: ", end="")
 
     # Valuation frequency
-    sd.log("valuation freq, ", end="")
+    sd.log("valuation freq", end="")
     val_freq = np.random.randint(3, 8, n*ndim).reshape(n, ndim)
     dist_data['val-freq'] = val_freq
 
